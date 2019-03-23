@@ -1,6 +1,10 @@
 # Pre-Configurator For Traefik On Service Fabric
 Allows per environment configuration of Traefik on Service Fabric
 
+## Info on this fork
+This fork pulls the certificate in KeyVault from the certificate store and not the secrets store.  Storing certificates in the secrets store [has been deprecated](https://github.com/MicrosoftDocs/azure-docs/issues/7977) and the preferred method is the certificate store.  The outlined process below is identical, only with the secret identifier now being the certificate identifier.  This is the name found below in your certificate view:
+![Select name from Name column of certificate store](https://user-images.githubusercontent.com/26301348/54872502-3c648100-4d9b-11e9-8015-a5428b290dde.png "Name Column in Certificate Store")
+
 ## Traefik On Service Fabric
 Refer to [this](https://github.com/jjcollinge/traefik-on-service-fabric) repo for the Service Fabric integration for Traefik. Ensure you complete the setups there (like downloading the Traefik binary and placing it in correct directory) before you continue.
 
@@ -126,7 +130,7 @@ The parameters are as follows
 
      Source can be MyLocalMachine or KeyVault, depending on which the certificate will either be picked from LocalMachine\MY store or the configured KeyVault
 
-     Identifier is Certificate thumbprint for LocalMachine and KeyVault secret name for KeyVault.
+     Identifier is Certificate thumbprint for LocalMachine and KeyVault ~~secret name~~ **certificate name** for KeyVault.
 
 *Note the certificates MUST be uploaded to keyvault using the Certificates option and not Secrets*
 - **TraefikKeyVaultUri** - Only required if you want to use KeyVault. This should be the KeyVault Uri. Start with https://

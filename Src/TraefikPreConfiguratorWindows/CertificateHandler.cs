@@ -292,7 +292,8 @@ namespace TraefikPreConfiguratorWindows
             SecretBundle certificateSecret;
             try
             {
-                certificateSecret = await keyVaultClient.GetSecretAsync(keyVaultUrl, certificateSecretName).ConfigureAwait(false);
+                var cert = await keyVaultClient.GetCertificateAsync(keyVaultUrl, certificateSecretName).ConfigureAwait(false);
+                certificateSecret = await keyVaultClient.GetSecretAsync(cert.SecretIdentifier.ToString()).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
