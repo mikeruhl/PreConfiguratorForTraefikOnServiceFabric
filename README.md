@@ -130,15 +130,17 @@ The parameters are as follows
 
      FileName is the filename of the cert on disk
 
-     Source can be MyLocalMachine, KeyVaultSecret or KeyVaultCertificate, depending on which the certificate will either be picked from LocalMachine\MY store or the configured KeyVault source.
+     Source can be MyLocalMachine, KeyVaultSecret or KeyVaultCertificate, depending on which the certificate will either be picked from LocalMachine\MY store or the configured KeyVault source.  Using KeyVault will default to secret storage for backwards compatibility.
 
 <a name="key-source-info"></a>
+
+### Source Details
 
 | Source        | Identifier    | Where to find | 
 | ------------- |-------------| -----|
 | LocalMachine  | Thumbprint | Found in the details of the certificate locally |
-| KeyVaultSecret  | Secret Name | Azure KeyVault in Secrets blade under 'Name' header |
-| LocalMachine  | Thumbprint | Azure KeyVault in Certificates blade under 'Name' header |
+| KeyVaultSecret/KeyVault  | Secret Name | Azure KeyVault in Secrets blade under 'Name' header |
+| KeyVaultCertificate  | Certificate Name | Azure KeyVault in Certificates blade under 'Name' header |
 
 *Note the certificates MUST be uploaded to keyvault using the Certificates option and not Secrets*
 - **TraefikKeyVaultUri** - Only required if you want to use KeyVault. This should be the KeyVault Uri. Start with https://

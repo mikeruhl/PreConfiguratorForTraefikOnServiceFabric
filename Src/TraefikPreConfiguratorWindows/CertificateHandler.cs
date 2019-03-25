@@ -294,7 +294,7 @@ namespace TraefikPreConfiguratorWindows
             SecretBundle certificateSecret;
             try
             {
-                if (string.Equals(certificateSource, "KeyVaultSecret", StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(certificateSource, "KeyVaultSecret", StringComparison.OrdinalIgnoreCase) || string.Equals(certificateSource, "KeyVault", StringComparison.OrdinalIgnoreCase))
                 {
                     certificateSecret = await keyVaultClient.GetSecretAsync(keyVaultUrl, certificateSecretName).ConfigureAwait(false);
                 }
