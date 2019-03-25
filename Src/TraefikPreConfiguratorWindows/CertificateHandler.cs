@@ -125,9 +125,10 @@ namespace TraefikPreConfiguratorWindows
                         return localMachineCertHandler;
                     }
                 }
-                else if (certConfig.CertSource.Equals("KeyVault", StringComparison.OrdinalIgnoreCase))
+                else if (certConfig.CertSource.StartsWith("KeyVault", StringComparison.OrdinalIgnoreCase))
                 {
                     ExitCode keyVaultCertHandlerExitCode = await KeyVaultCertHandlerAsync(
+                        certConfig.CertSource,
                         certConfig.CertName,
                         certConfig.CertIdentifier,
                         fullDirectoryPathForCerts,
@@ -271,6 +272,7 @@ namespace TraefikPreConfiguratorWindows
         /// <param name="keyVaultUrl">The key vault URL.</param>
         /// <returns>Exit code for the operation.</returns>
         private static async Task<ExitCode> KeyVaultCertHandlerAsync(
+            string certificateSource,
             string certificateName,
             string certificateSecretName,
             string fullDirectoryPath,
@@ -292,8 +294,20 @@ namespace TraefikPreConfiguratorWindows
             SecretBundle certificateSecret;
             try
             {
-                var cert = await keyVaultClient.GetCertificateAsync(keyVaultUrl, certificateSecretName).ConfigureAwait(false);
-                certificateSecret = await keyVaultClient.GetSecretAsync(cert.SecretIdentifier.ToString()).ConfigureAwait(false);
+                if (string.Equals(certificateSource, "KeyVaultSecret", StringComparison.OrdinalIgnoreCase))
+                {
+                    certificateSecret = await keyVaultClient.GetSecretAsync(keyVaultUrl, certificateSecretName).ConfigureAwait(false);
+                }
+                else if (string.Equals(certificateSource, "KeyVaultCertificate", StringComparison.OrdinalIgnoreCase))
+                {
+                    var cert = await keyVaultClient.GetCertificateAsync(keyVaultUrl, certificateSecretName).ConfigureAwait(false);
+                    certificateSecret = await keyVaultClient.GetSecretAsync(cert.SecretIdentifier.ToString()).ConfigureAwait(false);
+                }
+                else
+                {
+                    Logger.LogError(CallInfo.Site(), $"Specified KeyVault source is not supported: {certificateSource}");
+                    return ExitCode.KeyVaultConfigurationIncomplete;
+                }
             }
             catch (Exception ex)
             {
